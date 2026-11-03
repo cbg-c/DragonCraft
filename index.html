@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flamecraft — Tabletop Browser Edition</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Inline SVG Sprite Definitions (Mirrors assets/icons.svg for zero-CORS local & GitHub Pages rendering) -->
+  <div id="svg-sprite-container" aria-hidden="true"></div>
+
+  <!-- Top Header & Setup Bar -->
+  <header class="top-bar">
+    <div class="brand">
+      <svg class="icon lg"><use href="#icon-dragon"></use></svg>
+      <div>
+        <h1>FLAMECRAFT</h1>
+        <span class="subtitle">Artisan Dragon &amp; Shopkeeper Strategy Board Game</span>
+      </div>
+    </div>
+
+    <div class="setup-controls">
+      <label>Players:
+        <select id="player-count-select">
+          <option value="2" selected>2 Players</option>
+          <option value="3">3 Players</option>
+          <option value="4">4 Players</option>
+        </select>
+      </label>
+      <label>Mode:
+        <select id="mode-select">
+          <option value="ai" selected>1 Human vs AI Flamekeepers</option>
+          <option value="hotseat">Pass &amp; Play Hotseat</option>
+        </select>
+      </label>
+      <label>Enchantments:
+        <select id="deck-select">
+          <option value="purple" selected>Purple Deck (Standard)</option>
+          <option value="golden">Golden Deck (Variable Pairs)</option>
+        </select>
+      </label>
+      <button id="btn-new-game" class="btn primary">New Game</button>
+      <button id="btn-rules" class="btn secondary">Rulebook Reference</button>
+    </div>
+  </header>
+
+  <!-- Turn Status Banner -->
+  <section id="status-banner" class="status-banner"></section>
+
+  <!-- Main Tabletop Layout -->
+  <main class="tabletop-grid">
+    <!-- Left Column: Park Row, Enchantment Row & Active Player Hand -->
+    <aside class="left-column">
+      <!-- Active Player Dashboard -->
+      <div id="active-player-panel" class="panel player-dashboard"></div>
+
+      <!-- Enchantment Row (5 Face-up + Deck) -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Enchantment Row</h2>
+          <span id="enchantment-deck-count" class="badge">Deck: 13</span>
+        </div>
+        <div id="enchantment-row" class="card-list"></div>
+      </div>
+
+      <!-- The Park (5 Face-up Artisan Dragons + Deck) -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>The Park (Artisan Dragons)</h2>
+          <span id="artisan-deck-count" class="badge">Deck: 19</span>
+        </div>
+        <div id="park-row" class="card-list"></div>
+      </div>
+    </aside>
+
+    <!-- Center Column: Town Mat (Up to 12/14 Shops) -->
+    <section class="center-column">
+      <div class="panel town-panel">
+        <div class="panel-header">
+          <h2>Town Shops <span id="town-limit-badge" class="badge">6 / 12 Shops</span></h2>
+          <div class="deck-counters">
+            <span id="shop-deck-count" class="badge">Shop Deck: 10</span>
+            <span id="fancy-deck-count" class="badge">Fancy Deck: 34</span>
+          </div>
+        </div>
+        <div id="town-grid" class="town-grid"></div>
+      </div>
+    </section>
+
+    <!-- Right Column: Reputation Track, All Players Summary & Action Console -->
+    <aside class="right-column">
+      <!-- Interactive Turn Action Console -->
+      <div class="panel action-console">
+        <div class="panel-header">
+          <h2>Flamekeeper Actions</h2>
+        </div>
+        <div id="action-controls" class="action-controls"></div>
+      </div>
+
+      <!-- Reputation Scoreboard -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Reputation Track</h2>
+        </div>
+        <div id="scoreboard" class="scoreboard"></div>
+      </div>
+
+      <!-- Game Log -->
+      <div class="panel log-panel">
+        <div class="panel-header">
+          <h2>Town Chronicle</h2>
+        </div>
+        <div id="game-log" class="game-log"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Official Flamecraft Rules &amp; Artisan Abilities</h2>
+        <button id="btn-close-rules" class="btn secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Visiting a Shop</h3>
+        <p>Move your Dragon token to any Shop in Town <strong>different from the one you started your turn on</strong>. If other players are present at that Shop, you must give each of them <strong>1 Good or 1 Coin</strong> from your supply (unless visiting <em>Flagons &amp; Dragons</em>).</p>
+        <h3>2. Choose GATHER or ENCHANT</h3>
+        <ul>
+          <li><strong>GATHER:</strong> (1) Gain 1 item from the Shop, each Enchantment, and each Artisan Dragon there. (2) <em>Optional:</em> Place 1 Artisan Dragon from your hand into a matching empty slot and gain the slot's printed reward (filling the 3rd slot draws a new Shop facedown). (3) <em>Optional:</em> Fire Up 1 Artisan Dragon at the Shop. (4) <em>Optional:</em> Use the Shop's special ability.</li>
+          <li><strong>ENCHANT:</strong> (1) Select an Enchantment from the row (or your Reserve) matching the Shop's icon (or any icon at a Wild Shop; max 3 Enchantments per Shop). Pay the required Goods (Coins act as wild Goods unless marked with the No-Coin symbol). (2) Gain the Enchantment's rewards and tuck it under the Shop. (3) <em>Optional:</em> Fire Up <strong>ALL</strong> Artisan Dragons at the Shop in any order.</li>
+        </ul>
+        <h3>3. The 6 Artisan Dragon Specialties</h3>
+        <ul>
+          <li><strong>Bread (Gold):</strong> Draw 1 Artisan Dragon from the Park or top of the deck.</li>
+          <li><strong>Meat (Red):</strong> Place 1 Artisan Dragon from your hand into any matching empty slot in Town and gain its slot reward.</li>
+          <li><strong>Iron (Dark Blue):</strong> Gain 2 of the same Good produced by the Shop or an Artisan Dragon there.</li>
+          <li><strong>Crystal (Light Blue):</strong> Gain 3 different Goods of your choice.</li>
+          <li><strong>Plant (Green):</strong> Gift 1 Good or Coin to another player to gain 2 Reputation.</li>
+          <li><strong>Potion (Purple):</strong> Swap that Dragon with any other Artisan Dragon in Town (at a different Shop) or the Park (no slot reward).</li>
+        </ul>
+        <h3>4. End of Turn &amp; Game End</h3>
+        <p>Reveal any facedown new Shops, discard down to at most <strong>6 Artisan Dragons</strong> and <strong>7 of each Good</strong> (Coins are unlimited), and refill the Park and Enchantment row to 5 cards. When the last card of the Artisan Deck or Enchantment Deck is drawn, finish the current round so all players have equal turns. Leftover Coins score 1 Reputation each <em>before</em> scoring Moon Fancy Dragons.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
