@@ -1,151 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flamecraft — Tabletop Browser Edition</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flamecraft — Browser Edition</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Inline SVG Sprite Definitions (Mirrors assets/icons.svg for zero-CORS local & GitHub Pages rendering) -->
-  <div id="svg-sprite-container" aria-hidden="true"></div>
+  <!-- Hand-Crafted Non-AI W3C SVG Symbol Definitions -->
+  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Bread Icon -->
+      <symbol id="icon-bread" viewBox="0 0 24 24">
+        <path fill="#d99b26" stroke="#5c3a11" stroke-width="1.8" d="M4,13 C2,9 5,5 12,5 C19,5 22,9 20,13 L19,18 C19,19.1 18.1,20 17,20 L7,20 C5.9,20 5,19.1 5,18 Z"/>
+        <path stroke="#5c3a11" stroke-width="1.5" stroke-linecap="round" d="M9,8 L10,11 M12,7 L13,10 M15,8 L16,11"/>
+      </symbol>
+      <!-- Meat Icon -->
+      <symbol id="icon-meat" viewBox="0 0 24 24">
+        <path fill="#c84b31" stroke="#4a150b" stroke-width="1.8" d="M6,10 C6,6 10,4 14,6 C18,8 19,12 16,15 C13,18 6,16 6,10 Z"/>
+        <circle cx="13" cy="11" r="2.2" fill="#f7e7ce" stroke="#4a150b" stroke-width="1.4"/>
+        <path fill="#f7e7ce" stroke="#4a150b" stroke-width="1.5" d="M16,14 L20,18 C21,17 22,19 20,20 C19,22 17,21 18,20 L14,16 Z"/>
+      </symbol>
+      <!-- Iron Icon (Anvil) -->
+      <symbol id="icon-iron" viewBox="0 0 24 24">
+        <path fill="#4b6584" stroke="#1e272e" stroke-width="1.8" d="M2,9 L8,9 L8,7 L20,7 C22,7 22,11 19,12 L16,13 L17,18 L20,18 L20,20 L5,20 L5,18 L8,18 L9,13 L4,12 C2,11 2,9 2,9 Z"/>
+      </symbol>
+      <!-- Crystal Icon -->
+      <symbol id="icon-crystal" viewBox="0 0 24 24">
+        <polygon fill="#45aaf2" stroke="#192a56" stroke-width="1.8" points="12,2 19,8 16,21 8,21 5,8"/>
+        <polyline fill="none" stroke="#d1ecf1" stroke-width="1.4" points="12,2 12,21 M5,8 19,8"/>
+      </symbol>
+      <!-- Plant Icon (Leaf) -->
+      <symbol id="icon-plant" viewBox="0 0 24 24">
+        <path fill="#26de81" stroke="#0b4b28" stroke-width="1.8" d="M19,4 C10,4 5,9 5,17 C5,18 6,19 7,19 C15,19 20,14 19,4 Z"/>
+        <path fill="none" stroke="#0b4b28" stroke-width="1.6" stroke-linecap="round" d="M4,20 L15,9 M11,13 L11,9 M13,11 L17,11"/>
+      </symbol>
+      <!-- Potion Icon -->
+      <symbol id="icon-potion" viewBox="0 0 24 24">
+        <path fill="#a55eea" stroke="#3c1361" stroke-width="1.8" d="M9,3 L15,3 L15,6 L13,8 L18,15 C20,18 18,21 15,21 L9,21 C6,21 4,18 6,15 L11,8 L9,6 Z"/>
+        <line x1="7" y1="15" x2="17" y2="15" stroke="#f3e5f5" stroke-width="1.5"/>
+      </symbol>
+      <!-- Coin Icon -->
+      <symbol id="icon-coin" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" fill="#fed330" stroke="#7d5fff" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="6" fill="none" stroke="#b38806" stroke-width="1.4" stroke-dasharray="2,2"/>
+      </symbol>
+      <!-- Reputation Heart Icon -->
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path fill="#eb3b5a" stroke="#680718" stroke-width="1.8" d="M12,21 C12,21 3,15 3,8.5 C3,5.4 5.4,3 8.5,3 C10.2,3 11.9,3.8 12,5 C12.1,3.8 13.8,3 15.5,3 C18.6,3 21,5.4 21,8.5 C21,15 12,21 12,21 Z"/>
+      </symbol>
+      <!-- Wild / Any Icon -->
+      <symbol id="icon-wild" viewBox="0 0 24 24">
+        <polygon fill="#fd9644" stroke="#4b2c0c" stroke-width="1.6" points="12,2 14.8,8.5 22,9.2 16.5,14 18.2,21 12,17.3 5.8,21 7.5,14 2,9.2 9.2,8.5"/>
+      </symbol>
+      <!-- Dragon Card Icon -->
+      <symbol id="icon-dragon" viewBox="0 0 24 24">
+        <path fill="#f7b731" stroke="#4a2e00" stroke-width="1.8" d="M4,19 C4,12 8,6 16,4 C14,8 17,10 20,9 C18,14 14,19 4,19 Z"/>
+        <circle cx="13" cy="8" r="1.2" fill="#4a2e00"/>
+      </symbol>
+      <!-- Sun & Moon Icons -->
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="6" fill="#fed330" stroke="#b38806" stroke-width="1.8"/>
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path fill="#778ca3" stroke="#2f3542" stroke-width="1.8" d="M15,3 C9,4 6,10 8,16 C10,20 15,21 19,19 C14,19 11,15 11,10 C11,6 13,4 15,3 Z"/>
+      </symbol>
+    </defs>
+  </svg>
 
-  <!-- Top Header & Setup Bar -->
+  <!-- Top Navigation & Setup Bar -->
   <header class="top-bar">
     <div class="brand">
-      <svg class="icon lg"><use href="#icon-dragon"></use></svg>
-      <div>
-        <h1>FLAMECRAFT</h1>
-        <span class="subtitle">Artisan Dragon &amp; Shopkeeper Strategy Board Game</span>
-      </div>
+      <h1>🔥 Flamecraft</h1>
+      <span class="subtitle">Master Flamekeeper Tabletop Implementation</span>
     </div>
-
-    <div class="setup-controls">
+    <div class="game-controls">
       <label>Players:
         <select id="player-count-select">
           <option value="2" selected>2 Players</option>
           <option value="3">3 Players</option>
           <option value="4">4 Players</option>
+          <option value="5">5 Players</option>
         </select>
       </label>
-      <label>Mode:
-        <select id="mode-select">
-          <option value="ai" selected>1 Human vs AI Flamekeepers</option>
-          <option value="hotseat">Pass &amp; Play Hotseat</option>
+      <label>Enchantment Deck:
+        <select id="enchant-deck-select">
+          <option value="purple" selected>Purple (Standard)</option>
+          <option value="gold">Golden (Advanced)</option>
         </select>
       </label>
-      <label>Enchantments:
-        <select id="deck-select">
-          <option value="purple" selected>Purple Deck (Standard)</option>
-          <option value="golden">Golden Deck (Variable Pairs)</option>
-        </select>
-      </label>
-      <button id="btn-new-game" class="btn primary">New Game</button>
-      <button id="btn-rules" class="btn secondary">Rulebook Reference</button>
+      <button id="btn-new-game" class="btn-primary">New Game</button>
+      <button id="btn-rules" class="btn-secondary">Rulebook & Cards</button>
     </div>
   </header>
 
-  <!-- Turn Status Banner -->
-  <section id="status-banner" class="status-banner"></section>
+  <!-- Turn Banner & Step Tracker -->
+  <section id="turn-banner" class="turn-banner">
+    <div id="turn-status">Welcome to Town! Select a Shop to visit.</div>
+    <div id="turn-actions" class="turn-actions"></div>
+  </section>
 
-  <!-- Main Tabletop Layout -->
-  <main class="tabletop-grid">
-    <!-- Left Column: Park Row, Enchantment Row & Active Player Hand -->
-    <aside class="left-column">
-      <!-- Active Player Dashboard -->
-      <div id="active-player-panel" class="panel player-dashboard"></div>
-
-      <!-- Enchantment Row (5 Face-up + Deck) -->
-      <div class="panel">
+  <!-- Main Board Layout -->
+  <main class="board-container">
+    <!-- Left Column: Park (5 Faceup Artisan Dragons) & Enchantment Row (5 Faceup Enchantments) -->
+    <aside class="park-sidebar">
+      <div class="panel-box">
         <div class="panel-header">
-          <h2>Enchantment Row</h2>
-          <span id="enchantment-deck-count" class="badge">Deck: 13</span>
-        </div>
-        <div id="enchantment-row" class="card-list"></div>
-      </div>
-
-      <!-- The Park (5 Face-up Artisan Dragons + Deck) -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2>The Park (Artisan Dragons)</h2>
-          <span id="artisan-deck-count" class="badge">Deck: 19</span>
+          <h2>🌳 The Park</h2>
+          <span id="artisan-deck-count" class="deck-badge">Deck: 36</span>
         </div>
         <div id="park-row" class="card-list"></div>
       </div>
+
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2>✨ Enchantment Row</h2>
+          <span id="enchant-deck-count" class="deck-badge">Deck: 13</span>
+        </div>
+        <div id="enchant-row" class="card-list"></div>
+      </div>
+
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2>🐉 Fancy & Shop Decks</h2>
+        </div>
+        <div class="deck-stats">
+          <div>Fancy Deck: <strong id="fancy-deck-count">36</strong></div>
+          <div>Town Shop Deck: <strong id="shop-deck-count">10</strong></div>
+        </div>
+      </div>
     </aside>
 
-    <!-- Center Column: Town Mat (Up to 12/14 Shops) -->
-    <section class="center-column">
-      <div class="panel town-panel">
-        <div class="panel-header">
-          <h2>Town Shops <span id="town-limit-badge" class="badge">6 / 12 Shops</span></h2>
-          <div class="deck-counters">
-            <span id="shop-deck-count" class="badge">Shop Deck: 10</span>
-            <span id="fancy-deck-count" class="badge">Fancy Deck: 34</span>
-          </div>
-        </div>
-        <div id="town-grid" class="town-grid"></div>
+    <!-- Center: Town Shops Grid (Up to 14 Shops in Town) -->
+    <section class="town-section">
+      <div class="section-title-bar">
+        <h2>🏘️ Town Shops</h2>
+        <span class="hint">Click any Shop (except your current location) to visit on your turn.</span>
       </div>
+      <div id="town-grid" class="town-grid"></div>
     </section>
 
-    <!-- Right Column: Reputation Track, All Players Summary & Action Console -->
-    <aside class="right-column">
-      <!-- Interactive Turn Action Console -->
-      <div class="panel action-console">
-        <div class="panel-header">
-          <h2>Flamekeeper Actions</h2>
-        </div>
-        <div id="action-controls" class="action-controls"></div>
+    <!-- Right Column: Players, Reputation Track, Active Player Hand & Fancy Dragons -->
+    <aside class="players-sidebar">
+      <div class="panel-box">
+        <h2>❤️ Reputation & Players</h2>
+        <div id="players-overview" class="players-overview"></div>
       </div>
 
-      <!-- Reputation Scoreboard -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2>Reputation Track</h2>
+      <div class="panel-box active-player-panel">
+        <h2 id="active-player-title">Active Flamekeeper</h2>
+        <div id="active-player-goods" class="goods-bar"></div>
+
+        <h3>Artisan Hand (<span id="hand-count">0</span>/6)</h3>
+        <div id="active-player-hand" class="card-list"></div>
+
+        <h3>Fancy Dragons (Secret Objectives)</h3>
+        <div id="active-player-fancy" class="card-list"></div>
+
+        <div id="reserved-enchant-box" style="display:none;">
+          <h3>Reserved Enchantment</h3>
+          <div id="active-player-reserved"></div>
         </div>
-        <div id="scoreboard" class="scoreboard"></div>
       </div>
 
-      <!-- Game Log -->
-      <div class="panel log-panel">
-        <div class="panel-header">
-          <h2>Town Chronicle</h2>
-        </div>
+      <div class="panel-box log-box">
+        <h2>📜 Town Chronicle</h2>
         <div id="game-log" class="game-log"></div>
       </div>
     </aside>
   </main>
 
-  <!-- Rules Modal -->
-  <div id="rules-modal" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Official Flamecraft Rules &amp; Artisan Abilities</h2>
-        <button id="btn-close-rules" class="btn secondary">Close</button>
-      </div>
-      <div class="modal-body">
-        <h3>1. Visiting a Shop</h3>
-        <p>Move your Dragon token to any Shop in Town <strong>different from the one you started your turn on</strong>. If other players are present at that Shop, you must give each of them <strong>1 Good or 1 Coin</strong> from your supply (unless visiting <em>Flagons &amp; Dragons</em>).</p>
-        <h3>2. Choose GATHER or ENCHANT</h3>
-        <ul>
-          <li><strong>GATHER:</strong> (1) Gain 1 item from the Shop, each Enchantment, and each Artisan Dragon there. (2) <em>Optional:</em> Place 1 Artisan Dragon from your hand into a matching empty slot and gain the slot's printed reward (filling the 3rd slot draws a new Shop facedown). (3) <em>Optional:</em> Fire Up 1 Artisan Dragon at the Shop. (4) <em>Optional:</em> Use the Shop's special ability.</li>
-          <li><strong>ENCHANT:</strong> (1) Select an Enchantment from the row (or your Reserve) matching the Shop's icon (or any icon at a Wild Shop; max 3 Enchantments per Shop). Pay the required Goods (Coins act as wild Goods unless marked with the No-Coin symbol). (2) Gain the Enchantment's rewards and tuck it under the Shop. (3) <em>Optional:</em> Fire Up <strong>ALL</strong> Artisan Dragons at the Shop in any order.</li>
-        </ul>
-        <h3>3. The 6 Artisan Dragon Specialties</h3>
-        <ul>
-          <li><strong>Bread (Gold):</strong> Draw 1 Artisan Dragon from the Park or top of the deck.</li>
-          <li><strong>Meat (Red):</strong> Place 1 Artisan Dragon from your hand into any matching empty slot in Town and gain its slot reward.</li>
-          <li><strong>Iron (Dark Blue):</strong> Gain 2 of the same Good produced by the Shop or an Artisan Dragon there.</li>
-          <li><strong>Crystal (Light Blue):</strong> Gain 3 different Goods of your choice.</li>
-          <li><strong>Plant (Green):</strong> Gift 1 Good or Coin to another player to gain 2 Reputation.</li>
-          <li><strong>Potion (Purple):</strong> Swap that Dragon with any other Artisan Dragon in Town (at a different Shop) or the Park (no slot reward).</li>
-        </ul>
-        <h3>4. End of Turn &amp; Game End</h3>
-        <p>Reveal any facedown new Shops, discard down to at most <strong>6 Artisan Dragons</strong> and <strong>7 of each Good</strong> (Coins are unlimited), and refill the Park and Enchantment row to 5 cards. When the last card of the Artisan Deck or Enchantment Deck is drawn, finish the current round so all players have equal turns. Leftover Coins score 1 Reputation each <em>before</em> scoring Moon Fancy Dragons.</p>
-      </div>
+  <!-- Interactive Decision Modal -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <h3 id="modal-title">Action Required</h3>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-footer" class="modal-footer"></div>
     </div>
   </div>
 
-  <script type="module" src="game.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
